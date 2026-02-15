@@ -15,11 +15,11 @@ private:
 public:
 
     Articles (const char* MagazineName ,const char* articleName, int publicationDate);///constrastor
-    Articles(const Articles& other);//copy constrastor
-    Articles( Articles&& other);
-    const Articles& operator=(const Articles& other);
-    Articles& operator=( Articles&& other);
-    ~Articles();  //disconstrastor
+    Articles(const Articles& other);  //copy constructor
+    Articles( Articles&& other) noexcept;
+    Articles& operator=(const Articles& other);
+    Articles& operator=( Articles&& other) noexcept;
+    ~Articles();  //destructor
 
     friend std::ostream& operator<< (std::ostream& os,const Articles& a);
 
@@ -31,16 +31,6 @@ public:
     bool setarticleName(const char* name);
     //bool setpublicationDate(const int publicationDate);
 
-
-
-
-
-    
 };
-
-
-
-
-
 
 #endif

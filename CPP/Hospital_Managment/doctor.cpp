@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string.h>
+#include <utility>
 using namespace std;
 
 #include "doctor.h"
-
 
 Doctor:: Doctor(const char* name,const char* specialization,const int id) 
        :Employee(name,id),specialization (nullptr), myDepartment(nullptr)  ///constrastor
@@ -14,7 +14,7 @@ Doctor:: Doctor(const char* name,const char* specialization,const int id)
    }
 
 
-Doctor::Doctor(const Doctor& other)
+Doctor::Doctor(const Doctor& other) noexcept
     : Employee(other), specialization(nullptr), myDepartment(nullptr)
 {
     setspecialization(other.specialization);
@@ -29,53 +29,46 @@ Doctor:: Doctor( Doctor&& other)
     
 }
 
-const Doctor& Doctor:: operator=(const Doctor& other)
-   {
-    if(this!= &other){
-        Employee::operator=(other);
-        setspecialization(other.specialization);
-        myDepartment = nullptr;
-    }
-    return *this;
-
-   }
-
-Doctor& Doctor::operator=(Doctor&& other)
+Doctor& Doctor::operator=(const Doctor& other)
 {
     if (this != &other)
     {
-        Employee::operator=(std::move(other));
-        std::swap(specialization, other.specialization);
-        std::swap(myDepartment, other.myDepartment);
+        Employee::operator=(other);
+        setspecialization(other.specialization);
+        myDepartment = other.myDepartment;
     }
     return *this;
 }
 
 
-/*
-bool Doctor:: setname(const char*name)
+Doctor& Doctor::operator=(Doctor&& other) noexcept
+{
+    if (this != &other)
     {
-        if (name == nullptr){
-        return false;
-        }                          //should delete it - person\employee responsible
-        delete[] this->name;   
-         this->name = new char[strlen(name) + 1];
-        strcpy( this->name ,name); 
-        return true; 
-    }
-*/
+        Employee::operator=(std::move(other));
 
+        delete[] specialization;
+        specialization = other.specialization;
+        myDepartment   = other.myDepartment;
 
-bool Doctor:: setspecialization(const char* specialization)
-    {
-        if (specialization == nullptr){
-            return false;
-            }  
-        delete[]  this->specialization;   
-         this->specialization = new char[strlen(specialization) + 1];
-        strcpy( this->specialization, specialization);
-        return true;  
+        other.specialization = nullptr;
+        other.myDepartment = nullptr;
     }
+    return *this;
+}
+
+bool Doctor::setspecialization(const char* specialization)
+{
+    if (!specialization) return false;
+
+    char* tmp = new char[strlen(specialization) + 1];
+    strcpy(tmp, specialization);
+
+    delete[] this->specialization;
+    this->specialization = tmp;
+    return true;
+}
+
 
 void Doctor::clearDepartmentPtr()
     {
@@ -121,10 +114,10 @@ std::ostream& operator<<(std::ostream& os, const Doctor& d)
 	return os;
 }
 
+Doctor::~Doctor()
+{
+    if (myDepartment)
+        myDepartment->removeDoctor(*this);
 
-
-Doctor:: ~Doctor()      //disconstrastor
-    {
-        delete []specialization;
-    }
-    
+    delete[] specialization;
+}

@@ -15,17 +15,12 @@ private:
     int yearsExperience;
 
     Department* myDepartment;
-    Nurse(const Nurse& )=default;  //copy constrastor
+    Nurse(const Nurse& )=default;  //copy constructor
     Nurse& operator=(const Nurse& )=default;
-    
     
 public:
 
-    Nurse (const char* name,const int yearsExperience,const int id);///constrastor
-
-
-    //~Nurse();//disconstrastor
-
+    Nurse (const char* name,const int yearsExperience,const int id);///constructor
 
     const int getyearsExperience()   const {return yearsExperience;}
     const Department* getDepartment() const {return myDepartment;}
@@ -34,14 +29,12 @@ public:
     bool setyearsExperience(const int yearsExperience);
 
     bool setDepartment(Department* newDepartment);
-    bool removeDoctor(Nurse& oldNurse);
 
-    friend ostream& operator<<(ostream& os, const Nurse& n);
+    friend std::ostream& operator<<(std::ostream& os, const Nurse& n);
 
     virtual Employee* clone() const override { return new Nurse(*this); }
 
-
-    
+    ~Nurse() override;
 };
 
 

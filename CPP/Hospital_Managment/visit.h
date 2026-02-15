@@ -12,11 +12,11 @@ private:
 public:
     Visit(const char* visitDay, const char* purposeofvisit);
 
-    Visit(const Visit& other);
-    const Visit& operator=(const Visit& other);
+    Visit(const Visit& other) noexcept;
+    Visit& operator=(const Visit& other);
 
-    Visit(Visit&& other);
-    Visit& operator=(Visit&& other);
+    Visit(Visit&& other) noexcept;
+    Visit& operator=(Visit&& other) noexcept;
 
     ~Visit();
 

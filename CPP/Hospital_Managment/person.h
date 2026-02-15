@@ -2,7 +2,6 @@
 #define __PERSON_H__
 
 #include <iostream>
-using namespace std;
 
 class Person
 {
@@ -11,16 +10,14 @@ private:
     char* name;
     int id;
 
-    
-    
 public:
 
-    Person (const char* name ,const int id);///constrastor
-    Person(const Person& other);//copy constrastor
-    Person( Person&& other);
-    const Person& operator=(const Person& other);
-    Person& operator=( Person&& other);
-    ~Person();   //disconstrastor
+    Person (const char* name ,const int id);  ///constructor
+    Person(const Person& other); //copy constructor
+    Person(Person&& other) noexcept; //כדי שוקטור יזיז ולא יעתיקק 
+    Person& operator=(Person&& other) noexcept; 
+    Person& operator=(const Person& other);
+    ~Person();   //destructor
 
     friend std::ostream& operator<< (std::ostream& os,const Person& p);
 

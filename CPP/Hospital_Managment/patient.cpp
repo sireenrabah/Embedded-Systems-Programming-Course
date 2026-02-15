@@ -1,5 +1,7 @@
 #include <iostream>
-#include <string.h>
+#include <cstring>
+#include <utility>
+
 using namespace std;
 
 #include "patient.h"
@@ -9,7 +11,6 @@ Patient::Patient(const char* name, int id, const char* gender, int birthyear)
 {
     cout<<"In Patient::Patient \n";
     setgender(gender);
-
 }
 
 Patient:: Patient(const Patient& other)
@@ -19,49 +20,50 @@ Patient:: Patient(const Patient& other)
     setgender(other.gender);
 }
 
-const Patient& Patient::operator=(const Patient& other) 
+Patient& Patient::operator=(const Patient& other)
 {
-    cout<<"In Patient::Patient (operator=)\n";
-
-    if(this== &other)
+    if (this != &other)
     {
-        return *this;
+        Person::operator=(other);
+        setgender(other.gender);
+        birthyear = other.birthyear;
     }
-    Person::operator=(other);
-    setgender(other.gender);
-    birthyear = other.birthyear;
-
     return *this;
 }
 
-Patient::Patient(Patient&& other)
+Patient::Patient(Patient&& other) noexcept
     : Person(std::move(other)), gender(other.gender), birthyear(other.birthyear)
 {
     other.gender = nullptr;
+    other.birthyear = 0;
 }
 
+Patient& Patient::operator=(Patient&& other) noexcept
+{
+    if (this != &other)
+    {
+        Person::operator=(std::move(other));
 
-Patient& Patient:: operator=( Patient&& other)
-   {
-    if(this!= &other){
-        std:: swap(birthyear,other.birthyear);
-        std:: swap(gender,other.gender);
-        
+        delete[] gender;
+        gender = other.gender;
+        birthyear = other.birthyear;
+
+        other.gender = nullptr;
+        other.birthyear = 0;
     }
     return *this;
+}
 
-   }
-
-bool Patient:: setgender(const char* gender)
+bool Patient::setgender(const char* gender)
 {
-    if (gender == nullptr){
-        return false;
-        }  
-        delete[] this->gender;   
-        this->gender = new char[strlen(gender) + 1];
-        strcpy( this->gender ,gender); 
-        return true; 
+    if (!gender) return false;
 
+    char* tmp = new char[std::strlen(gender) + 1];
+    std::strcpy(tmp, gender);
+
+    delete[] this->gender;
+    this->gender = tmp;
+    return true;
 }
 
 bool  Patient:: setbirthyear(const int birthyear)
@@ -70,18 +72,17 @@ bool  Patient:: setbirthyear(const int birthyear)
     return true;
 }
 
-
 std::ostream& operator<< (std::ostream& os,const Patient& p)
 {
     os << "The Patient Details: \n";
 	os << "name: " << p.getname() << "\n";
-	os << "Doctor Id: " << p.getid() << "\n";
+	os << "Patient Id: " << p.getid() << "\n";
     os << "gender: " << p.getgender() << "\n";
 	os << "birthyear : " << p.getbirthyear() << "\n";
 	return os;
 }
 
-Patient:: ~Patient()//disconstrastor
+Patient:: ~Patient()  //destructor
 {
     cout<<"In Patient::~Patient \n";
     delete[] gender; 

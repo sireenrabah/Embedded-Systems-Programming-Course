@@ -1,7 +1,6 @@
 #ifndef __DOCTOR_H__
 #define __DOCTOR_H__
 #include <iostream>
-using namespace std;
 
 #include "department.h"
 #include "employee.h"
@@ -14,15 +13,14 @@ private:
     char* specialization;
     Department* myDepartment;
     
-    
 public:
 
     Doctor (const char* name,const char* specialization,const int id);///constrastor
-    Doctor(const Doctor& other);//copy constructor
+    Doctor(const Doctor& other) noexcept;//copy constructor
     Doctor( Doctor&& other); //move
 
-    const Doctor& operator=(const Doctor& other);
-    Doctor& operator=( Doctor&& other);
+    Doctor& operator=(const Doctor& other);
+    Doctor& operator=( Doctor&& other) noexcept;
   
     ~Doctor();    //disconstrastor
 

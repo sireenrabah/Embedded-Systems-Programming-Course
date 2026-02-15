@@ -1,7 +1,7 @@
 #ifndef __DEPARTMENT_H__
 #define __DEPARTMENT_H__
 #include <iostream>
-
+#include <vector>
 
 //#include "doctor.h"
 
@@ -12,16 +12,9 @@ class Department
 
 private:
     char* name;
-    Doctor** Doctorarr;
-    int physicalNumOfDoctor, logicalNumOfDoctor;
+    std::vector<Doctor*> doctors;
+    std::vector<Nurse*> nurses;
 
-    Nurse** Nursearr;
-    int logicalNumOfNurse;
-    int physicalNumOfNurse;
-
-
-
-    
 public:
 
     Department (const char* Name );    ///constrastor
@@ -30,7 +23,10 @@ public:
     ~Department();      //disconstrastor
 
     const char* getname()   const {return name;}
-    const int getlogicalNumOfDoctor()   const {return logicalNumOfDoctor;}
+    
+    int getNumDoctors() const { return (int)doctors.size(); }
+    int getNumNurses()  const { return (int)nurses.size(); }
+
     void setname(const char* Name);
     bool assignDoctor( Doctor& doctor);
     bool removeDoctor(Doctor& oldDoctor);
